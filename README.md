@@ -1,2 +1,2 @@
 # hope-consulting-starter
-## here the start of our starter kit
+## Here the start of our starter kit
