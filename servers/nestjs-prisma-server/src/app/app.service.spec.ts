@@ -15,7 +15,7 @@ describe("AppService", () => {
 
   describe("getHello", () => {
     it('should return "Hello World!"', () => {
-      expect(service.getHello()).toEqual({ message: "Hello World!" });
+      expect(service.getHello()).toEqual("Hello World!");
     });
   });
 });

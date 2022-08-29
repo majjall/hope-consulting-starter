@@ -1,6 +1,7 @@
+// https://docs.nestjs.com/techniques/configuration
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
-import { configuration } from './configuration';
+import { configuration } from './config';
 // import { validationSchema } from './validation';
 
 
@@ -10,6 +11,7 @@ import { configuration } from './configuration';
       // envFilePath: `${process.cwd()}/config/env/${process.env.NODE_ENV}.env`, // ['.env'],
       isGlobal: true,
       load: [configuration],
+      expandVariables: true,
       // validationSchema,
     }),
   ],

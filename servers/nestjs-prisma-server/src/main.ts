@@ -76,11 +76,12 @@ async function bootstrap() {
 
   await app.listen(nestConfig.port);
 
-  Logger.log(`🚀 Application Server is running...`);
+  // Logger.log(`🚀 Application Server is running...`);
   // 🚀 Graphql Subscriptions ready at: ${subscriptionsUrl}
   Logger.log(`
     🚀 REST Server ready at: http://localhost:${nestConfig.port}/${nestConfig.apiPath}
-    ⭐️ Graphql Server ready at: http://localhost:${nestConfig.port}/graphql
+    ⭐️ Swagger REST API docs available at: http://localhost:${nestConfig.port}/${swaggerConfig.path}
+    🚀 Graphql Server ready at: http://localhost:${nestConfig.port}/graphql
   `, "Application Boostrap");
 }
 

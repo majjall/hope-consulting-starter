@@ -9,9 +9,6 @@ import { GraphQLModule } from "./graphql";
   ],
   controllers: [],
   providers: [],
-  exports: [
-    // ConfigModule,
-    // GraphQLModule,
-  ],
+  exports: [],
 })
 export class CoreModule {}
