@@ -37,7 +37,16 @@ export const configuration = (): Config => {
       // },
       // tracing: false,
     },
+
+    security: {
+      access_secret: process.env.JWT_ACCESS_SECRET || 'nestjsPrismaAccessSecret',
+      refresh_secret: process.env.JWT_REFRESH_SECRET || 'nestjsPrismaRefreshSecret',
+      expiresIn: process.env.JWT_EXPIRE_IN || '2m',
+      refreshIn: process.env.JWT_REFRESH_IN || '7d',
+      bcryptSaltOrRound: process.env.JWT_SALT || 10,
+    },
   };
   // console.log(JSON.stringify(config));
   return config;
 };
+
