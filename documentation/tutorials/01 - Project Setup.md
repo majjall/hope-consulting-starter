@@ -22,29 +22,3 @@ chance
 
 
 $ npm i --legacy-peer-deps
-
-
-$
-$
-$
-
-$
-$
-$
-$
-
-$
-$
-$
-$
-
-$
-$
-$
-$
-
-
-
-
-npx @nestjs/cli g mo app/core  
-npx @nestjs/cli g mo features/auth

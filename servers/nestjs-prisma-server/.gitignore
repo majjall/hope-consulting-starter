@@ -1,5 +1,9 @@
 /src/**/*.graphql
-
+prisma/**/*.db
+prisma/dbml/
+prisma/migrations/dev/
+.env
+package-lock.json
 *.lock
 
 # compiled output

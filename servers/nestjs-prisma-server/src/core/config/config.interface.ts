@@ -1,6 +1,9 @@
 export interface Config {
   nest: NestConfig;
+  cors: CorsConfig;
   graphql?: GraphqlConfig;
+  swagger: SwaggerConfig;
+  security: SecurityConfig;
   [key: string]: any;
 }
 
@@ -31,3 +34,10 @@ export interface GraphqlConfig { // GqlModuleOptions
   sortSchema: boolean;
 }
 
+export interface SecurityConfig {
+  access_secret: string;
+  refresh_secret: string;
+  expiresIn: string;
+  refreshIn: string;
+  bcryptSaltOrRound: string | number;
+}

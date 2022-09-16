@@ -7,6 +7,8 @@ describe("AppService", () => {
 
   beforeAll(async () => {
     const app = await Test.createTestingModule({
+      imports: [],
+      controllers: [],
       providers: [AppService],
     }).compile();
 
@@ -15,7 +17,8 @@ describe("AppService", () => {
 
   describe("getHello", () => {
     it('should return "Hello World!"', () => {
-      expect(service.getHello()).toEqual("Hello World!");
+      expect(service.getHello()).toBe('Hello World!');
+        // .toEqual("Hello World!");
     });
   });
 });

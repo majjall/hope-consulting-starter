@@ -3,25 +3,30 @@
  * This is only a minimal backend to get started.
  */
 
-import { ConsoleLogger, INestApplication, Logger, ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ConsoleLogger, INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { PrismaService, PrismaClientExceptionFilter } from "nestjs-prisma";
+import helmet from 'helmet';
+import * as csurf from 'csurf';
 import { AppModule } from "./app.module";
 import { CorsConfig, NestConfig, SwaggerConfig } from "./core/config";
-// import { PrismaClientExceptionFilter, PrismaService } from "./prisma";
 
 
 export const setupSwaggerOpenApi = (app: INestApplication) => {
   const configService = app.get(ConfigService);
   const swaggerConfig = configService.get<SwaggerConfig>('swagger');
   const swaggerOptions = new DocumentBuilder()
-      .setTitle(swaggerConfig.title)
-      .setDescription(swaggerConfig.description)
-      .setVersion(swaggerConfig.version)
-      // .addBearerAuth()
-      // .addTag('API')
-      .build();
+    .setTitle(swaggerConfig.title)
+    .setDescription(swaggerConfig.description)
+    .setVersion(swaggerConfig.version)
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'Token' },
+      'access-token',
+    )
+    // .addTag('API')
+    .build();
 
   const document = SwaggerModule.createDocument(app, swaggerOptions, {
     ignoreGlobalPrefix: false,
@@ -33,7 +38,7 @@ export const setupSwaggerOpenApi = (app: INestApplication) => {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     // logger: console,
-    bufferLogs: true,
+    // bufferLogs: true,
   });
 
   const configService = app.get(ConfigService);
@@ -54,8 +59,27 @@ async function bootstrap() {
   }));
   // app.useGlobalFilters(new ValidationFilter());
 
+  // Prisma - Prisma Client Exception Filter for unhandled exceptions
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
-  // Swagger Api
+  // Prisma - enable shutdown hook
+  const prismaService: PrismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
+
+
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  // Protect app from some well-known web vulnerabilities by setting HTTP headers appropriately
+  app.use(helmet());
+
+  // CSRF Protection
+  app.use(csurf());
+
+
+
+
+  // Swagger Open Api
   if (swaggerConfig.enabled) {
     setupSwaggerOpenApi(app);
   }
@@ -71,12 +95,9 @@ async function bootstrap() {
     // });
   }
 
-  //TODO: Prisma - Prisma Client Exception Filter for unhandled exceptions
-  //TODO: Prisma - enable shutdown hook
-
   await app.listen(nestConfig.port);
 
-  // Logger.log(`🚀 Application Server is running...`);
+  // Logger.log(`🚀 Application Server is running on: ${await app.getUrl()}...`);
   // 🚀 Graphql Subscriptions ready at: ${subscriptionsUrl}
   Logger.log(`
     🚀 REST Server ready at: http://localhost:${nestConfig.port}/${nestConfig.apiPath}

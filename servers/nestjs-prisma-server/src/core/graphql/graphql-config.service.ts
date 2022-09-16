@@ -43,6 +43,7 @@ export class GraphQLConfigService implements GqlOptionsFactory {
         numberScalarMode: 'integer',
         dateScalarMode: 'timestamp'
       },
+      context: ({ req }) => ({ req }),
       // subscriptions
       installSubscriptionHandlers: true,
       subscriptions: {
